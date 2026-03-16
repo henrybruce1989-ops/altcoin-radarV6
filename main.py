@@ -69,11 +69,11 @@ consec_cache = {}  # symbol -> list of last 3 pct涨幅
 def score_radar(df, symbol):
     last = df.iloc[-1]
     pct = (last["close"] - last["open"])/last["open"]*100
-    ma10_vol = df["volume"].rolling(10).mean().iloc[-1]
-    vol_ratio = last["volume"]/(ma10_vol+1e-6)
+    ma20_vol = df["volume"].rolling(20).mean().iloc[-1]
+    vol_ratio = last["volume"]/(ma20_vol+1e-6)
     
     # 必要条件：单K涨幅>=1%、成交量放量>=1.5倍
-    if pct <1 or vol_ratio<1.5:
+    if pct <1.2 or vol_ratio<1.5:
         return None
     
     score = 0
@@ -123,9 +123,9 @@ def score_radar(df, symbol):
     return total_score,pct,vol_ratio,velocity,momentum,consec_score
 
 def signal_level(score):
-    if score>=8:
+    if score>=10:
         return "🚀绝佳"
-    elif score>=5:
+    elif score>=7:
         return "🔥优质"
     else:
         return "⚡普通"
@@ -167,7 +167,7 @@ def handle_kline(msg):
             processed.add(symbol)
         msg_send = f"""
 币对: {symbol}
-信号等级: {level} ({score}/10)
+信号等级: {level} ({score}/13)
 单K涨幅: {pct:.2f}%
 成交量: {vol_ratio:.2f}x
 速度: {velocity:.2f}%
