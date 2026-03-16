@@ -96,7 +96,7 @@ def score_radar(df, symbol):
 
     vol_ratio = last["volume"] / ma_vol
 
-    if pct < 1.2 or vol_ratio < 1.5:
+    if pct < 1 or vol_ratio < 1.5:
         return None
 
     score = 0
